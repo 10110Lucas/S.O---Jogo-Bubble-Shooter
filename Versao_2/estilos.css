@@ -1,0 +1,10 @@
+canvas{
+	height: 600px; 
+	width: 600px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	background: blue;
+	margin-top: -300px;
+	margin-left: -300px;
+}
