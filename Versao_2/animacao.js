@@ -15,11 +15,11 @@ let mira = {
 	diry: 0
 }
 
-let ponteira = {
-	x: (canvas.width / 2),
-	y: canvas.height - 7.5,
+let agulha = {
 	x2: (canvas.width / 2),
-	y2: canvas.height - 20
+	y2: canvas.height - 7.5,
+	x: (canvas.width / 2),
+	y: canvas.height - 20
 }
 
 let alvo = {
@@ -64,8 +64,8 @@ function moveMira(){
 	if(37 in teclas && mira.grauInicio >= (1 * Math.PI)){
 		mira.grauInicio -= 0.12;
 		mira.grauFim -= 0.12;
-		ponteira.x2 -= 2.5;
-		ponteira.y2 += 0.5;
+		agulha.x -= (Math.cos(0.14 * (Math.PI / 180)) * 12);
+		agulha.y -= Math.sin(0.14 * (Math.PI / 180)) * 12;
 		bola.dirx -= (mira.grauFim - mira.grauInicio) + 0.08;
 		// bola.dirx -= (mira.grauFim - mira.grauInicio) + 0.12;
 	}
@@ -74,9 +74,10 @@ function moveMira(){
 	else if(39 in teclas && mira.grauFim <= (2 * Math.PI)){
 		mira.grauInicio += 0.12;
 		mira.grauFim += 0.12;
-		ponteira.x2 += 2.5;
-		ponteira.y2 += Math.pow(ponteira.x2, 2);
 		bola.dirx += (mira.grauFim - mira.grauInicio) + 0.12;
+		agulha.x += (Math.cos(0.14 * (Math.PI / 180)) * 12);
+		agulha.y += Math.sin(0.14 * (Math.PI / 180)) * 12;
+		 // + (canvas.width / 2)
 	}
 
 	//tecla de start
@@ -132,6 +133,9 @@ function reiniciaPosicaoInicialDaBola(){
 	mira.grauInicio = 1.45 * Math.PI;
 	mira.grauFim = 1.55 * Math.PI;
 
+	agulha.x = (canvas.width / 2);
+	agulha.y = canvas.height - 20;
+
 	teclaStart = false;
 }
 
@@ -148,11 +152,11 @@ function desenha(){
 	//alvos
 	ctx.fillRect(alvo.x, alvo.y, alvo.largura, alvo.altura);
 
-	//ponteira da mira
+	//agulha da mira
 	ctx.beginPath();
 	ctx.lineCap = "round";
-	ctx.moveTo(ponteira.x, ponteira.y);
-	ctx.lineTo(ponteira.x2, ponteira.y2);
+	ctx.moveTo(agulha.x2, agulha.y2);
+	ctx.lineTo(agulha.x, agulha.y);
 	ctx.stroke();
 
 	//arco da mira
