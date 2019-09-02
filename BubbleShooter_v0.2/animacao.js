@@ -1,44 +1,50 @@
 let canvas = document.getElementById('mycanvas');
 let ctx = canvas.getContext('2d');
 
+
+let tela = document.getElementById('agulha');
+let ponteiro = tela.getContext('2d');
+const img = document.getElementById('indicador');
+
 let alvos = [];
 let teclas = {};
 let teclaStart = false;
 
 let mira = {
 	x: (canvas.width / 2),
-	y: canvas.height - 5,
-	raio: 12,
-	grauInicio: 1.45 * Math.PI,
-	grauFim: 1.55 * Math.PI,
+	y: canvas.height - 20,
+	raio: 50,
+	grauInicio: 1.48 * Math.PI,
+	grauFim: 1.52 * Math.PI,
 	dirx: 0,
 	diry: 0
 }
 
 let agulha = {
 	x2: (canvas.width / 2),
-	y2: canvas.height - 7.5,
+	y2: canvas.height - 40,
 	x: (canvas.width / 2),
-	y: canvas.height - 20
+	y: canvas.height - 120
 }
 
 let alvo = {
-	x: (canvas.width / 2) - 5,
+	x: (canvas.width / 2) - 10,
 	y: 10,
-	altura: 5,
-	largura: 10,
-	cor: ''
+	altura: 20,
+	largura: 20,
+	cor: 'black'
 }
 
 let bola = {
-	x: (canvas.width / 2) - 5,
-	y: canvas.height - 10,
-	altura: 5,
-	largura: 10,
+	x: (canvas.width / 2) - 10,
+	y: canvas.height - 50,
+	altura: 20,
+	largura: 20,
 	dirx: 0,
 	diry: -1,
 	modificaVeloc: 0,
-	speed: 4
+	speed: 9,
+	cor: 'black'
 };
 
 //pegar a tecla do teclado
@@ -67,18 +73,18 @@ function moveMira(){
 		agulha.x -= (Math.cos(0.14 * (Math.PI / 180)) * 12);
 		agulha.y -= Math.sin(0.14 * (Math.PI / 180)) * 12;
 		bola.dirx -= (mira.grauFim - mira.grauInicio) + 0.08;
-		// bola.dirx -= (mira.grauFim - mira.grauInicio) + 0.12;
 	}
 
 	//tecla da mira sentido direita
 	else if(39 in teclas && mira.grauFim <= (2 * Math.PI)){
 		mira.grauInicio += 0.12;
 		mira.grauFim += 0.12;
-		bola.dirx += (mira.grauFim - mira.grauInicio) + 0.12;
+		bola.dirx += (mira.grauFim - mira.grauInicio) + 0.08;
 		agulha.x += (Math.cos(0.14 * (Math.PI / 180)) * 12);
 		agulha.y += Math.sin(0.14 * (Math.PI / 180)) * 12;
 		 // + (canvas.width / 2)
 	}
+
 
 	//tecla de start
 	if(32 in teclas && teclaStart == false){
@@ -89,7 +95,9 @@ function moveMira(){
 function atingeAlvo(){
 
 	//quando atingir o alvo
-	if(bola.y <= alvo.y + alvo.altura + 1 && bola.x + bola.largura >= alvo.x && bola.x <= alvo.x + alvo.largura){
+	if(bola.y <= alvo.y + alvo.altura + 5 &&
+		 bola.x + bola.largura >= alvo.x &&
+		 bola.x <= alvo.x + alvo.largura){
 		bola.dirx = 0;
 		bola.diry = 0;
 		modificaVeloc = 0;
@@ -105,9 +113,8 @@ function moveBola(){
 
 	atingeAlvo();
 
-
 	//quando bater nas paredes
-	if(bola.x == 0 && bola.x + bola.largura >= canvas.width){
+	if(bola.x <= 0 && bola.x + bola.largura >= canvas.width){
 		reiniciaPosicaoInicialDaBola();
 	}
 	//quando bater no teto ( y = 0 )
@@ -123,26 +130,38 @@ function moveBola(){
 function reiniciaPosicaoInicialDaBola(){
 
 	//reinicia posicao da bolinha
-	bola.x = (canvas.width / 2) - 5;
-	bola.y = canvas.height - 10;
+	bola.x = (canvas.width / 2) - 10;
+	bola.y = canvas.height - 50;
 	bola.dirx = 0;
 	bola.diry = -1;
 	bola.modificaVeloc = 0;
-	bola.speed = 2;
+	bola.speed = 9;
 
-	mira.grauInicio = 1.45 * Math.PI;
-	mira.grauFim = 1.55 * Math.PI;
+	mira.grauInicio = 1.48 * Math.PI;
+	mira.grauFim = 1.52 * Math.PI;
 
 	agulha.x = (canvas.width / 2);
-	agulha.y = canvas.height - 20;
+	agulha.y = canvas.height - 120;
 
 	teclaStart = false;
+}
+
+
+function rotacionar(x, y, r, angulo){
+	tela.height = 104;
+  tela.width = 104;
+	tela.style = `margin-top: ${y}px;margin-left: ${x}px;`;
+	ponteiro.translate(img.width / 2 + tela.width / 2 - 4, img.height / 2 + 8);
+	ponteiro.rotate(-angulo * Math.PI / 180);
+	ponteiro.drawImage(img, -img.width / 2, -img.height / 2, 8, r);
 }
 
 function desenha(){
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	
+
+	rotacionar(658.5, 495, 50, -bola.dirx * 26);
+
 	moveMira();
 	moveBola();
 
