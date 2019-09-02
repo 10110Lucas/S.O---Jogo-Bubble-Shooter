@@ -4,8 +4,13 @@ body{
 
 .tela {
 	background: #040e42;
-	border:1px solid #FFF;
-	position: absolute;
+	/* border:1px solid #FFF;
+	position: absolute; */
 	margin-top: 5px;
 	margin-left: 30%;
+}
+
+canvas {
+	border:1px solid #FFF;
+	position: absolute;
 }
