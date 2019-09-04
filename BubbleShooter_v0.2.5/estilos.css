@@ -1,0 +1,17 @@
+#mycanvas {
+	/* background-image:
+	url('imagens/bolinhas-fundo.jpg');
+	*/
+	background-color: blue;
+	margin-top: 5px;
+	margin-left: 30%;
+}
+
+canvas {
+	border:3px solid #000;
+	position: absolute;
+}
+
+#indicador {
+	display: none;
+}
