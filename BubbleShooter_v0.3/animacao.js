@@ -19,14 +19,22 @@ let mira = {
 	diry: 0
 }
 
-
+let alvos = [];
 let alvo = {
-	x: (canvas.width / 2) - 10,
-	y: 10,
-	altura: 20,
-	largura: 20,
-	cor: 'black'
+	x: 0,
+	y: 0,
+	altura: 0,
+	largura: 0
 }
+
+addAlvo((canvas.width / 2) - 10, 10, 20, 20);
+// let alvo = {
+// 	x: (canvas.width / 2) - 10,
+// 	y: 10,
+// 	altura: 20,
+// 	largura: 20,
+// 	cor: 'black'
+// }
 
 let bola = {
 	x: (canvas.width / 2) - 10,
@@ -79,14 +87,27 @@ function moveMira(){
 function atingeAlvo(){
 
 	//quando atingir o alvo
-	if(bola.y <= alvo.y + alvo.altura + 8 &&
-		 bola.x + bola.largura >= alvo.x &&
-		 bola.x <= alvo.x + alvo.largura){
-		bola.dirx = 0;
-		bola.diry = 0;
-		modificaVeloc = 0;
-		teclaStart = false;
+	for(let i = 0; i < alvos.length; i++){
+		if(bola.y <= alvos[i].y + alvos[i].altura + 10 &&
+													 bola.x + bola.largura >= alvo.x &&
+					 								 bola.x <= alvo.x + alvo.largura){
+			bola.dirx = 0;
+			bola.diry = 0;
+			modificaVeloc = 0;
+			teclaStart = false;
+			addAlvo(bola.x, bola.y, bola.largura, bola.altura);
+			reiniciaPosicaoInicialDaBola();
+		}
 	}
+	// if(bola.y <= alvo.y + alvo.altura + 5 &&
+	// 	 bola.x + bola.largura >= alvo.x &&
+	// 	 bola.x <= alvo.x + alvo.largura){
+	// 	bola.dirx = 0;
+	// 	bola.diry = 0;
+	// 	modificaVeloc = 0;
+	// 	teclaStart = false;
+	// 	alvos.push();
+	// }
 }
 
 function moveBola(){
@@ -123,6 +144,14 @@ function reiniciaPosicaoInicialDaBola(){
 	teclaStart = false;
 }
 
+function addAlvo(x, y, largura, altura){
+	alvo = {};
+	alvo.x = x;
+	alvo.y = y;
+	alvo.largura = largura;
+	alvo.altura = altura;
+	alvos.push(alvo);
+}
 
 function girarMira(x, y, r, angulo){
 	tela.height = 104;
@@ -146,7 +175,10 @@ function desenha(){
 	ctx.fillStyle = 'white';
 
 	//alvos
-	ctx.fillRect(alvo.x, alvo.y, alvo.largura, alvo.altura);
+	// ctx.fillRect(alvo.x, alvo.y, alvo.largura, alvo.altura);
+	for(let i = 0; i < alvos.length; i++){
+		ctx.fillRect(alvos[i].x, alvos[i].y, alvos[i].largura, alvos[i].altura)
+	}
 
 	//arco da mira
 	ctx.beginPath();
