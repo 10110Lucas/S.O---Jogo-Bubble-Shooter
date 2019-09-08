@@ -15,8 +15,7 @@ let mira = {
 	raio: 50,
 	grauInicio: 266 * (Math.PI / 180),
 	grauFim: 274 * (Math.PI / 180),
-	dirx: 0,
-	diry: 0
+	dirx: 0
 }
 
 let alvos = [];
@@ -27,14 +26,11 @@ let alvo = {
 	largura: 0
 }
 
-addAlvo((canvas.width / 2) - 10, 10, 20, 20);
-// let alvo = {
-// 	x: (canvas.width / 2) - 10,
-// 	y: 10,
-// 	altura: 20,
-// 	largura: 20,
-// 	cor: 'black'
-// }
+addAlvo((canvas.width / 2) - 10, 130);
+addAlvo((canvas.width / 2) - 40, 130);
+addAlvo((canvas.width / 2) + 20, 130);
+addAlvo((canvas.width / 2) - 70, 130);
+addAlvo((canvas.width / 2) + 50, 130);
 
 let bola = {
 	x: (canvas.width / 2) - 10,
@@ -60,6 +56,8 @@ function iniciaGame(){
 	if(teclaStart == true){
 		bola.x += (bola.speed + bola.modificaVeloc) * bola.dirx;
 		bola.y += (bola.speed + bola.modificaVeloc) * bola.diry;
+	} else {
+		moveMira();
 	}
 }
 
@@ -69,6 +67,7 @@ function moveMira(){
 		mira.grauInicio -= 0.04;
 		mira.grauFim -= 0.04;
 		bola.dirx -= (mira.grauFim - mira.grauInicio) + 0.04;
+		mira.dirx -= (mira.grauFim - mira.grauInicio) + 0.04;
 	}
 
 	//tecla da mira sentido direita
@@ -76,6 +75,7 @@ function moveMira(){
 		mira.grauInicio += 0.04;
 		mira.grauFim += 0.04;
 		bola.dirx += (mira.grauFim - mira.grauInicio) + 0.04;
+		mira.dirx += (mira.grauFim - mira.grauInicio) + 0.04;
 	}
 
 	//tecla de start
@@ -89,35 +89,30 @@ function atingeAlvo(){
 	//quando atingir o alvo
 	for(let i = 0; i < alvos.length; i++){
 		if(bola.y <= alvos[i].y + alvos[i].altura + 10 &&
-													 bola.x + bola.largura >= alvo.x &&
-					 								 bola.x <= alvo.x + alvo.largura){
-			bola.dirx = 0;
-			bola.diry = 0;
-			modificaVeloc = 0;
-			teclaStart = false;
-			addAlvo(bola.x, bola.y, bola.largura, bola.altura);
-			reiniciaPosicaoInicialDaBola();
+			 bola.x + bola.largura >= alvos[i].x &&
+			 bola.x <= alvos[i].x + alvos[i].largura){
+
+						bola.dirx = 0;
+						bola.diry = 0;
+						modificaVeloc = 0;
+						teclaStart = false;
+						addAlvo(bola.x, bola.y, bola.largura, bola.altura);
+						reiniciaPosicaoInicialDaBola();
 		}
 	}
-	// if(bola.y <= alvo.y + alvo.altura + 5 &&
-	// 	 bola.x + bola.largura >= alvo.x &&
-	// 	 bola.x <= alvo.x + alvo.largura){
-	// 	bola.dirx = 0;
-	// 	bola.diry = 0;
-	// 	modificaVeloc = 0;
-	// 	teclaStart = false;
-	// 	alvos.push();
-	// }
 }
 
 function moveBola(){
-
 	iniciaGame();
-	moveMira();
 	atingeAlvo();
-	//quando bater nas paredes
-	if(bola.x <= 0 && bola.x + bola.largura >= canvas.width){
-		reiniciaPosicaoInicialDaBola();
+	// moveMira();
+	//quando bater na parede esquerda
+	if(bola.x < 5){
+		bola.dirx = 1;
+	}
+	//quando bater na parede direita
+	else if(bola.x + bola.largura > canvas.height - 10){
+		bola.dirx = -1;
 	}
 	//quando bater no teto ( y = 0 )
 	else if(bola.y <= 0){
@@ -137,19 +132,17 @@ function reiniciaPosicaoInicialDaBola(){
 	bola.diry = -1;
 	bola.modificaVeloc = 0;
 	bola.speed = 9;
-	// mira.grauInicio = 1.48 * Math.PI;
-	// mira.grauFim = 1.52 * Math.PI;
 	mira.grauInicio = 266 * (Math.PI / 180);
 	mira.grauFim = 274 * (Math.PI / 180);
 	teclaStart = false;
 }
 
-function addAlvo(x, y, largura, altura){
+function addAlvo(x, y){
 	alvo = {};
 	alvo.x = x;
 	alvo.y = y;
-	alvo.largura = largura;
-	alvo.altura = altura;
+	alvo.largura = 20;
+	alvo.altura = 20;
 	alvos.push(alvo);
 }
 
@@ -167,8 +160,7 @@ function desenha(){
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	girarMira(658.5, 495, 50, bola.dirx * 12);
-	moveMira();
+	girarMira(658, 495, 50, mira.dirx * 12);
 	moveBola();
 
 	//cor geral
