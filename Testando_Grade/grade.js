@@ -2,6 +2,7 @@ let canvas = document.getElementById('mycanvas');
 let paint = canvas.getContext('2d');
 
 let cores = ['black', 'red', 'yellow'];
+// let matrizAlvos = [][];
 let alvos = [];
 let alvo = {
 	x: 0,
@@ -11,44 +12,94 @@ let alvo = {
 	cor: ''
 }
 
+//----------------------------------------------------------------------------------
 // let xInicial = (canvas.width / 2) - 70;
 let xInicial = 70;
 let yInicial = 120;
 let alteraCor = 0;
 let x = xInicial + (30 * 6);
 let y = yInicial + (30 * 3);
-let linha = 0;
-let coluna = yInicial;
+let linha = yInicial;
+let coluna = 0;
+let aux = 0;
+let aux2 = 0;
+let aux3 = '';
+let i = 0;
 
-// for(linha = xInicial; linha < ?; linha += 30){
-//   for(coluna; coluna < ?;linha += 30){
-//
-//   }
-// }
+console.log(` Y: ${y}   -> X: ${x}`);
+
+for(linha; linha < y; linha += 30){
+	console.log(`linha: ${linha}`);
+	if(i % 2 == 0){
+		aux3 = 'par'
+		aux = 0;
+		// x -= 30;
+	} else{
+		aux3 = 'impar'
+		aux = 10;
+		// x += 30;
+	}
+  for(coluna = xInicial; coluna < x; coluna += 30){
+		console.log(`Coluna: ${coluna} -> cor: ${alteraCor}`);
+		if(aux3 == 'impar'){
+			addAlvo(coluna + aux, linha, cores[alteraCor]);
+		} else {
+			addAlvo(coluna, linha, cores[alteraCor]);
+		}
+		if (alteraCor < 2) {
+			alteraCor++;
+		} else if (alteraCor > 1) {
+			alteraCor = 0;
+		}
+		// matrizAlvos[0].push = 0;
+  }
+	i++;
+	if (alteraCor < 2) {
+		alteraCor++;
+	} else if (alteraCor > 1) {
+		alteraCor = 0;
+	}
+	console.log(`Cor: ${alteraCor}`);
+}
+
+/*
+	primeiro coluna recebe valor de xInicial
+	entra no loop das colunas
+	addAlvo
+	vai incrementando coluna durante o loop enquanto valor é menor que x
+	saindo do loop das colunas
+	altera a cor
+	incrementa a linha
 
 do{
-  linha = xInicial;
-  coluna += 30;
+  coluna = xInicial;
 
   do{
 
-    addAlvo(linha, coluna, cores[alteraCor]);
-    linha += 30;
+    addAlvo(coluna, linha, cores[alteraCor]);
+    coluna += 30;
 
-  }while(linha < x);// x = 7vezes
+  }while(coluna < x);// x = 7vezes
 
   alteraCor++;
+	 linha += 30;
 
-}while(coluna < y);// y = 3 vezes
-// addAlvo(xInicial, yInicial, cores[0]);//cor black
-// addAlvo(xInicial + 30, yInicial, cores[0]);// cor black
-// addAlvo(xInicial + 30 + 30, yInicial, cores[1]);//cor vermelha
-// addAlvo(xInicial + 30 + 30 + 30, yInicial, cores[1]);//cor vermelha
-// addAlvo(xInicial + 30 + 30 + 30 + 30, yInicial, cores[2]);//cor amarela
-// addAlvo(xInicial + 30 + 30 + 30 + 30 + 30, yInicial, cores[2]);//cor amarela
+}while(linha < y);// y = 3 vezes
+addAlvo(xInicial, yInicial, cores[0]);//cor black
+addAlvo(xInicial + 30, yInicial, cores[0]);// cor black
+addAlvo(xInicial + 30 + 30, yInicial, cores[1]);//cor vermelha
+addAlvo(xInicial + 30 + 30 + 30, yInicial, cores[1]);//cor vermelha
+addAlvo(xInicial + 30 + 30 + 30 + 30, yInicial, cores[2]);//cor amarela
+addAlvo(xInicial + 30 + 30 + 30 + 30 + 30, yInicial, cores[2]);//cor amarela
+*/
 
 
 //---- Funções --------- Funções --------- Funções --------- Funções --------- Funções --------- Funções --------- Funções ----------
+function coresIguais(){
+	let vetLinha = [];
+	let vetColuna = [];
+	// let matrizAlvos = [][];
+}
 
 function addAlvo(x, y, cor){
 	alvo = {};
