@@ -237,27 +237,34 @@ function criarMatriz(lin, col){
 	}
 }
 
-function reOrdenarMatriz(linhas, colunas){
+function reOrdenarMatriz(linhas, colunas, alvo){
 	let diferencaEntreLinhas = 0;
 	let deferencaEntreColunas = 0;
-	for(let i = 1; i < linhas.length; i++){
+	for(let i = 1; i < linhas.length - 1; i++){
 		if(linhas[i - 1] != linhas[i]){
 			diferencaEntreLinhas = linhas[i] - linhas[i - 1];
 		}
 	}
-	for(let j = 1; j < colunas.length; j++){
+	for(let j = 1; j < colunas.length - 1; j++){
 		if(colunas[j - 1] != colunas[j]){
 			diferencaEntreColunas = colunas[j] - colunas[j - 1];
 		}
 	}
-	for(let c = 1; c < colunas.length; c++){
-		if(colunas[colunas.length - 1] > colunas[c - 1]){
-			console.log(`Teste: ${colunas[c]}\nFoi maior que: ${colunas[c - 1]}`);
-			// alvos[alvos.length - 1].x = colunas[c] + 25;
+	for(let lin = 0; lin < linhas.length; lin++){
+		if(lin == linhas.length - 1){
+			for(let col = 0; col < colunas.length; col++){
+				if((alvo.x + alvo.largura) / 2 > colunas[col] &&
+					 (alvo.x + alvo.largura) / 2 < colunas[col] + 12.5){
+
+						alvo.x = colunas[col] + 50;
+						console.log(`Linhas: ${linhas[lin]}\nColunas: ${colunas[col]}`);
+				}
+			}
 		}
 	}
 	console.log(`Linhas: ${linhas}\nDif.Linhas: ${diferencaEntreLinhas}\n`+
-		`Colunas: ${colunas}\nDif.Colunas: ${diferencaEntreColunas}`);
+		`Colunas: ${colunas}\nDif.Colunas: ${diferencaEntreColunas}\n`+
+		`Alvo Lin: ${(alvo.y + alvo.altura) / 2}\nAlvo Col: ${(alvo.x + alvo.largura) / 2}`);
 }
 
 function mapearMatriz(){
@@ -290,7 +297,7 @@ function mapearMatriz(){
 			}
 		}
 	}
-	reOrdenarMatriz(linhas, colunas);
+	reOrdenarMatriz(linhas, colunas, alvos[alvos.length - 1]);
 }
 
 function addAlvo(x, y, type){
