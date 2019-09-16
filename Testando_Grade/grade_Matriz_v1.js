@@ -13,7 +13,6 @@ let alvo = {
 }
 
 //----------------------------------------------------------------------------------
-// let xInicial = (canvas.width / 2) - 70;
 let xInicial = 70;
 let yInicial = 120;
 let alteraCor = 0;
@@ -33,11 +32,9 @@ for(linha; linha < y; linha += 30){
 	if(i % 2 == 0){
 		aux3 = 'par'
 		aux = 0;
-		// x -= 30;
 	} else{
 		aux3 = 'impar'
 		aux = 10;
-		// x += 30;
 	}
   for(coluna = xInicial; coluna < x; coluna += 30){
 		console.log(`Coluna: ${coluna} -> cor: ${alteraCor}`);
@@ -51,7 +48,6 @@ for(linha; linha < y; linha += 30){
 		} else if (alteraCor > 1) {
 			alteraCor = 0;
 		}
-		// matrizAlvos[0].push = 0;
   }
 	i++;
 	if (alteraCor < 2) {
@@ -95,11 +91,6 @@ addAlvo(xInicial + 30 + 30 + 30 + 30 + 30, yInicial, cores[2]);//cor amarela
 
 
 //---- Funções --------- Funções --------- Funções --------- Funções --------- Funções --------- Funções --------- Funções ----------
-function coresIguais(){
-	let vetLinha = [];
-	let vetColuna = [];
-	// let matrizAlvos = [][];
-}
 
 function addAlvo(x, y, cor){
 	alvo = {};
@@ -122,6 +113,5 @@ function desenha(){
 	}
 }
 
-// setInterval(desenha, 50);
 
 desenha();
