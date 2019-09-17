@@ -1,0 +1,26 @@
+body {
+	background-color: #2f9c34;
+}
+
+#mycanvas {
+	background-image:
+		url('imagens/background.png');
+	/* background-color: blue; */
+	background-position: center;
+	background-size: 165% 110%;
+	margin-top: 5px;
+	margin-left: 30%;
+	border:3px solid #000;
+}
+
+canvas {
+	position: absolute;
+}
+
+#indicador {
+	display: none;
+}
+
+#bola-de-lan {
+	display: none;
+}
