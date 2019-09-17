@@ -39,9 +39,8 @@ let bolha = {
 	cor: cores[0],
 	dirx: 0,
 	diry: -1,
-	speed: 9
+	speed: 20
 };
-
 let bolhas = []
 bolhas.push(bolha);
 addBolas(4);
@@ -142,7 +141,7 @@ function proximaJogada(){
 	bolhas[0].y = canvas.height - 80;
 	bolhas[0].dirx = 0;
 	bolhas[0].diry = -1;
-	bolhas[0].speed = 9;
+	bolhas[0].speed = 20;
 	mira.grauInicio = 266 * (Math.PI / 180);
 	mira.grauFim = 274 * (Math.PI / 180);
 	mira.dirx = 0;
@@ -220,32 +219,19 @@ function ordenarMatriz(alvo, bola){
 		bola.x = alvo.x - 25;
 	}
 	addAlvo(bola.x, bola.y, bola.type);
+	cluster(bola);
 }
 
-/* function cluster(bola){
-// 	let coresIguais = [];
-// 	for(let i = 0; i < alvos.length; i++){
-// 		if(alvos[i].type == bola.type){
-// 			coresIguais.push(alvos[i]);
-// 			if(coresIguais.length > 2){
-// 				// alert(`Total cores iguais: ${coresIguais.length}\n`+
-// 					// 			`Posicao.x: ${bola.x}\n`+
-// 					// 			`Posicao.y: ${bola.y}\n`+
-// 					// 			`Cor.cor: ${bola.cor}\n\n`+
-// 					// 						`x: ${coresIguais[0].x}\n`+
-// 					// 						`y: ${coresIguais[0].y}\n`+
-// 					// 						`cor: ${coresIguais[0].cor}\n\n`+
-// 					// 									`x: ${coresIguais[1].x}\n`+
-// 					// 									`y: ${coresIguais[1].y}\n`+
-// 					// 									`cor: ${coresIguais[1].cor}`);
-// 				}
-// 				explodir(alvos[i]);
-// 				// if(bola.x+10 > coresIguais[1].x && bola.x < coresIguais[0].x){
-// 					// 	alert('explodirá aqui');
-// 			}
-// 		}
-// 	}
-}*/
+function cluster(bola){
+	let grupo = 0;
+	for(let i = alvos.length - 1; i > -1; i--){
+		if(bola.type == alvos[i].type){
+			grupo++;
+			alvos.splice(i, 1);
+		}
+	}
+	console.log(`total clusters encontrado: ${grupo}`);
+}
 
 function addAlvo(x, y, type){
 	alvo = {};
@@ -266,7 +252,7 @@ function addBolas(type){
 	bolha.type = type;
 	bolha.dirx = 0;
 	bolha.diry = -1;
-	bolha.speed = 9;
+	bolha.speed = 20;
 	bolhas.push(bolha);
 }
 
