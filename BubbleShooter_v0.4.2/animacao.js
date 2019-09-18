@@ -219,17 +219,22 @@ function ordenarMatriz(alvo, bola){
 		bola.x = alvo.x - 25;
 	}
 	addAlvo(bola.x, bola.y, bola.type);
-	cluster();
+	cluster(bola);
 }
 
-function cluster(){
-	/*let grupo = 0;
-	for(let i = alvos.length - 1; i > -1; i--){
-		if(bola.type == alvos[i].type){
-			grupo++;
-			alvos.splice(i, 1);
-		}
-	}*/
+function cluster(bola){
+	// let grupo = [];
+	// for(let i = alvos.length - 1; i > -1; i--){
+	// 	if(bola.type == alvos[i].type){
+	// 		grupo.push(alvos[i]);
+	// 		// alvos.splice(i, 1);
+	// 	}
+	// }
+	// for(let i = 0; i < grupo.length; i++){
+	// 	console.log(`\nType: ${grupo[i].type} - Linha: ${grupo[i].y} - Coluna: ${grupo[i].x}`);
+	// }
+
+
 	let col = alvos.length - 1;
 	let linhas = 0;
 	let colunas = 0;
@@ -237,7 +242,7 @@ function cluster(){
 		if(alvos[col - 1].y != alvos[col].y){
 			mudaLinha = false;
 			linhas++;
-			console.log(alvos[col].type + '->type, y->'+ alvos[col].y + ' x->'+ alvos[col].x);
+			// console.log(alvos[col].type + '->type, y->'+ alvos[col].y + ' x->'+ alvos[col].x);
 		}
 		if(linhas == 1){
 			colunas++;
@@ -245,6 +250,16 @@ function cluster(){
 		col--;
 	}
 	console.log('colunas: '+colunas+'\nlinhas: '+linhas)
+
+	for(linhas; linhas > 1; linhas--){
+
+		for(col = colunas; col > 0; col--){
+			if(alvos[col].type == bola.type){
+				console.log(`Type: ${alvos[col].type} - Linha: ${alvos[col].y} - Coluna: ${alvos[col].x}`);
+			}
+		}
+
+	}
 }
 
 function addAlvo(x, y, type){
