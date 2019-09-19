@@ -223,43 +223,73 @@ function ordenarMatriz(alvo, bola){
 }
 
 function cluster(bola){
-	// let grupo = [];
 	// for(let i = alvos.length - 1; i > -1; i--){
 	// 	if(bola.type == alvos[i].type){
 	// 		grupo.push(alvos[i]);
 	// 		// alvos.splice(i, 1);
 	// 	}
 	// }
-	// for(let i = 0; i < grupo.length; i++){
-	// 	console.log(`\nType: ${grupo[i].type} - Linha: ${grupo[i].y} - Coluna: ${grupo[i].x}`);
-	// }
 
-
-	let col = alvos.length - 1;
+	let aux = alvos.length - 1;
 	let linhas = 0;
 	let colunas = 0;
-	while(col > 0){
-		if(alvos[col - 1].y != alvos[col].y){
-			mudaLinha = false;
+	while(aux > 0){
+		if(alvos[aux - 1].y != alvos[aux].y){
 			linhas++;
-			// console.log(alvos[col].type + '->type, y->'+ alvos[col].y + ' x->'+ alvos[col].x);
+			// console.log(alvos[aux].type + '->type, y->'+ alvos[aux].y + ' x->'+ alvos[aux].x);
 		}
 		if(linhas == 1){
 			colunas++;
 		}
-		col--;
+		aux--;
 	}
 	console.log('colunas: '+colunas+'\nlinhas: '+linhas)
 
-	for(linhas; linhas > 1; linhas--){
+	let grade = [];
+	aux = 0;
+	for(let i = 0; i < linhas; i++){
+		grade.push([]);
+		for(let j = 0; j < colunas; j++){
+			grade[i].push(alvos[aux++]);
+			// console.log(`Type: ${grade[i][j].type} -> Y: ${grade[i][j].y} -> X: ${grade[i][j].x}`);
+		}
+	}
 
-		for(col = colunas; col > 0; col--){
-			if(alvos[col].type == bola.type){
-				console.log(`Type: ${alvos[col].type} - Linha: ${alvos[col].y} - Coluna: ${alvos[col].x}`);
+	console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
+	let miniCluster = [];
+	let direito1 = bola.x + 25;
+	let esquerdo1 = bola.x - 25;
+	let direito2 = 0;
+	let esquerdo2 = 0;
+	for(let lin = linhas - 1; lin >= 0; lin--){
+		for(let col = colunas - 1; col >= 0; col--){
+
+			if(grade[lin][col].type == bola.type){
+				if(grade[lin][col].x == direito1){
+					miniCluster.push(grade[lin][col]);
+				}
+				else if(grade[lin][col].x == esquerdo1){
+					miniCluster.push(grade[lin][col]);
+				}
+				console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x}`);
 			}
 		}
-
 	}
+
+
+
+	// let line = linhas - 1;
+	// let colu = 0;
+	// while(line > -1){
+	// 	colu = colunas - 1;
+	// 	while(colu > -1){
+	// 		if(alvos[colu].type === bolinha.type){
+	// 			console.log(`Type: ${alvos[colu].type} - Linha: ${alvos[colu].y} - Coluna: ${alvos[colu].x}`);
+	// 		}
+	// 		colu -= 1;
+	// 	}
+	// 	line -= 1;
+	// }
 }
 
 function addAlvo(x, y, type){
