@@ -285,34 +285,34 @@ function cluster(bola){
 				vazios = 0;
 				contador++;
 				if(grade[lin][col].x <= xMaximo && grade[lin][col].x >= bola.x){
-					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMaximo: ${xMaximo}`);
 					xMaximo = grade[lin][col].x + 25;
 					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
 					contador++;
 
+
 					if(col < grade[lin].length - 1 && grade[lin][col+1].x && grade[lin][col+1].type == grade[lin][col].type){
-						xMaximo = grade[lin][col+1].x + 25;
-						// console.log(`Y: ${grade[lin][col+1].y} -> X: ${grade[lin][col+1].x} - Lin.${lin}-Col.${col+1} - xVizinhoMaximo: ${xMaximo}`);
-						let indice = alvos.indexOf(grade[lin][col+1]);
-						alvos.splice(indice, 1);
+						for(let i = col; i < grade[lin].length - 1; i++){
+							if(grade[lin][col].type == grade[lin][col+1].type){
+								alvos.splice(alvos.indexOf(grade[lin][i]), 1);
+							}
+						}
+						// xMaximo = grade[lin][col+1].x + 25;
 						contador++;
 					}
 
-					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMaximo: ${xMaximo} para o proximo`);
 				}
 				if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x){
-					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMinimo: ${xMinimo}`);
 					xMinimo = grade[lin][col].x - 25;
 					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
 					contador++;
 
-					if(col > 0 && grade[lin][col-1].x && grade[lin][col-1].type == grade[lin][col].type){
-						xMinimo = grade[lin][col-1].x - 25;
-						console.log(`Y: ${grade[lin][col-1].y} -> X: ${grade[lin][col-1].x} - Lin.${lin}-Col.${col-1} - xVizinhoMinimo: ${xMinimo}`);
-						alvos.splice(alvos.indexOf(grade[lin][col]-1), 1);
-						contador++;
-					}
-					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMinimo: ${xMinimo} para o proximo`);
+					// if(col > 0 && grade[lin][col-1].x && grade[lin][col-1].type == grade[lin][col].type){
+					// 	xMinimo = grade[lin][col-1].x - 25;
+					// 	console.log(`Y: ${grade[lin][col-1].y} -> X: ${grade[lin][col-1].x} - Lin.${lin}-Col.${col-1} - xVizinhoMinimo: ${xMinimo}`);
+					// 	alvos.splice(alvos.indexOf(grade[lin][col]-1), 1);
+					// 	contador++;
+					// }
+
 				}
 			}
 			//quando não for do mesmo tipo da bola lancada
