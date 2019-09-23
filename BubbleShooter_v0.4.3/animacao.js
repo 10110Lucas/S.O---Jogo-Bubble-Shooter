@@ -17,7 +17,7 @@ let mira = {
 	grauFim: 274 * (Math.PI / 180),
 	dirx: 0
 }
-let cores = ['black', 'red', 'yellow'];
+let cores = ['azul', 'rosa', 'verde', 'roxo', 'amarelo'];
 let alvos = [];
 let alvo = {
 	x: 0,
@@ -43,9 +43,9 @@ let bolha = {
 };
 let bolhas = []
 bolhas.push(bolha);
-addBolas(4);
-bolhas[1].x = (canvas.width / 2) + 60;
 addBolas(1);
+bolhas[1].x = (canvas.width / 2) + 60;
+addBolas(4);
 addBolas(2);
 addBolas(3);
 
@@ -136,7 +136,7 @@ function acionarTeto(){
 function proximaJogada(){
 	if(bolhas.length >= 1)
 		bolhas.shift();
-	//volta o ponto inicial
+	//volta para o lançador
 	bolhas[0].x = (canvas.width / 2) - 21;
 	bolhas[0].y = canvas.height - 80;
 	bolhas[0].dirx = 0;
@@ -146,11 +146,30 @@ function proximaJogada(){
 	mira.grauFim = 274 * (Math.PI / 180);
 	mira.dirx = 0;
 	teclaStart = false;
+	//organizar a fila de espera
 	organizaFila();
 }
 
 function organizaFila(){
-	bolhas[1].x = (canvas.width / 2) + 60;
+	//tem um processo em espera?
+	if(bolhas.length > 0 && bolhas.length < 2 && alvos.length >= 1){
+		let tipo = 0;
+		let tipos = [];
+		for(let i = 0; i < alvos.length;i++){
+			if(i > 0 && alvos[i-1].type != alvos[i].type){
+				tipos.push(alvos[i-1].type);
+			}
+		}
+		//ordena o array em ordem crescente
+		tipos.sort((a, b) => a - b);
+		//posicao zero é o menor numero, posicao maxima é o maior numero
+		tipo = getRandomInt(tipos[0], tipos[tipos.length - 1]);
+		addBolas(tipo);
+	}
+	if(bolhas[1]){
+		bolhas[1].x = (canvas.width / 2) + 60;
+	}
+	//tem mais de um processo em espera?
 	if(bolhas.length >= 1){
 		for(let i = 2; i < bolhas.length; i++){
 			bolhas[i].x = bolhas[i-1].x + 50;
@@ -182,13 +201,27 @@ function criarMatriz(lin, col){
 	  for(coluna = xInicial; coluna < x; coluna += 50){
 			if(aux3 == 'impar'){
 				addAlvo(coluna + aux, linha, alteraType);
-			} else {
+			}
+			else if(linha == (yInicial+(50 * 2)) && coluna == (xInicial + (50 * 4))){
+					addAlvo(coluna, linha, 0);
+			}
+			else if(linha == (yInicial+(50 * 2)) && coluna == (xInicial + (50 * 5))){
+					addAlvo(coluna, linha, 0);
+			}
+			else{
 				addAlvo(coluna, linha, alteraType);
 			}
 			coluna += 50;
 			if(aux3 == 'impar'){
 				addAlvo(coluna + aux, linha, alteraType);
-			} else {
+			}
+			else if(linha == (yInicial+(50 * 2)) && coluna == (xInicial + (50 * 4))){
+					addAlvo(coluna, linha, 0);
+			}
+			else if(linha == (yInicial+(50 * 2)) && coluna == (xInicial + (50 * 5))){
+					addAlvo(coluna, linha, 0);
+			}
+			else{
 				addAlvo(coluna, linha, alteraType);
 			}
 			if (alteraType < 4) {
@@ -223,92 +256,79 @@ function ordenarMatriz(alvo, bola){
 }
 
 function cluster(bola){
-	// for(let i = alvos.length - 1; i > -1; i--){
-	// 	if(bola.type == alvos[i].type){
-	// 		grupo.push(alvos[i]);
-	// 		// alvos.splice(i, 1);
-	// 	}
-	// }
-
-	let aux = alvos.length - 1;
 	let linhas = 0;
 	let colunas = 0;
-	while(aux > 0){
-		if(alvos[aux - 1].y != alvos[aux].y){
+	let grade = [[]];
+	//cria uma nova matriz secundaria para referencia
+	for(let i = 1; i < alvos.length; i++){
+		if(alvos[i].y != alvos[i-1].y){
+			grade[linhas].push(alvos[i-1]);
+			grade.push([]);
 			linhas++;
-			// console.log(alvos[aux].type + '->type, y->'+ alvos[aux].y + ' x->'+ alvos[aux].x);
-		}
-		if(linhas == 1){
+		}else{
+			grade[linhas].push(alvos[i-1]);
 			colunas++;
 		}
-		aux--;
 	}
-	console.log('colunas: '+colunas+' --> linhas: '+linhas)
-
-	let grade = [];
-	aux = 0;
-	for(let i = 0; i < linhas; i++){
-		grade.push([]);
-		for(let j = 0; j < colunas; j++){
-			grade[i].push(alvos[aux++]);
-			// console.log(`Type: ${grade[i][j].type} -> Y: ${grade[i][j].y} -> X: ${grade[i][j].x}`);
-		}
-	}
+	console.log('colunas: '+ grade[0].length +' --> linhas: '+ grade.length);
 
 	console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
-	let miniCluster = [];
-	let direito1 = bola.x + 25;
-	let esquerdo1 = bola.x - 25;
+	let xMaximo = bola.x + 25;
+	let xMinimo = bola.x - 25;
+	let vazios = 0;
 	let contador = 0;
-	let direito2 = 0;
-	let esquerdo2 = 0;
-	for(let lin = linhas - 1; lin > -1; lin--){
-		for(let col = colunas - 1; col >= 0; col--){
+	for(let lin = grade.length - 2; lin >= 0; lin--){
+		for(let col = grade[lin].length - 1; col >= 0; col--){
 
 			if(grade[lin][col].type == bola.type){
 
-				if(grade[lin][col].x == direito1){
+				vazios = 0;
+				contador++;
+				if(grade[lin][col].x <= xMaximo && grade[lin][col].x >= bola.x){
+					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMaximo: ${xMaximo}`);
+					xMaximo = grade[lin][col].x + 25;
 					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
 					contador++;
-					// direito2 = grade[lin][col].x;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Direito: ${direito1}`);
+
+					if(col < grade[lin].length - 1 && grade[lin][col+1].x && grade[lin][col+1].type == grade[lin][col].type){
+						xMaximo = grade[lin][col+1].x + 25;
+						// console.log(`Y: ${grade[lin][col+1].y} -> X: ${grade[lin][col+1].x} - Lin.${lin}-Col.${col+1} - xVizinhoMaximo: ${xMaximo}`);
+						let indice = alvos.indexOf(grade[lin][col+1]);
+						alvos.splice(indice, 1);
+						contador++;
+					}
+
+					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMaximo: ${xMaximo} para o proximo`);
 				}
-				else if(grade[lin][col].x == direito1 + 50){
+				if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x){
+					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMinimo: ${xMinimo}`);
+					xMinimo = grade[lin][col].x - 25;
 					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
 					contador++;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Direito: ${direito1}+50`);
+
+					if(col > 0 && grade[lin][col-1].x && grade[lin][col-1].type == grade[lin][col].type){
+						xMinimo = grade[lin][col-1].x - 25;
+						// console.log(`Y: ${grade[lin][col-1].y} -> X: ${grade[lin][col-1].x} - Lin.${lin}-Col.${col-1} - xVizinhoMinimo: ${xMinimo}`);
+						alvos.splice(alvos.indexOf(grade[lin][col]-1), 1);
+						contador++;
+					}
+					// console.log(`Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - xMinimo: ${xMinimo} para o proximo`);
 				}
-				else if(grade[lin][col].x == esquerdo1){
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-					esquerdo2 = grade[lin][col].x;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Esquerdo: ${esquerdo1}`);
-				}
-				else if(grade[lin][col].x == esquerdo1 - 50){
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Esquerdo: ${esquerdo1}-50`);
-				}
-				else if(grade[lin][col].x == bola.x){
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Bola: ${bola.x}`);
-				}
-				else if(grade[lin][col].x == bola.x - 50){
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Bola esq: ${bola.x}-50`);
-				}
-				else if(grade[lin][col].x == bola.x + 50){
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-					console.log(`Type: ${grade[lin][col].type} -> Y: ${grade[lin][col].y} -> X: ${grade[lin][col].x} - Lin.${lin}-Col.${col} - Bola dir: ${bola.x}+50`);
-				}
+			}
+			else if(col >= 0 && col <= grade[lin].length - 1 && grade[lin][col].type != bola.type){
+				vazios++;
+			}
+
+			if(lin <= grade.length - 3 && vazios > grade[lin].length - 1){
+				break;
 			}
 		}
 	}
-	if(contador >= 3){
+	//comparacao para excluir somente a ultima bola que foi lancada,
+	//para evitar bug comparanda o tipo do ultimo objeto do array com o tipo da bola lancada
+	if(contador > 2 && alvos[alvos.length-1].type == bola.type){
 		alvos.splice(alvos.indexOf(bola), 1);
+		// alvos.pop();
 	}
 }
 
@@ -342,6 +362,12 @@ function girarMira(x, y, r, angulo){
 	ponteiro.translate(img.width / 2 + tela.width / 2 - 4, img.height / 2 + 8);
 	ponteiro.rotate(angulo * (Math.PI / 180));
 	ponteiro.drawImage(img, -img.width / 2, -img.height / 2, 8, r);
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function desenha(){
