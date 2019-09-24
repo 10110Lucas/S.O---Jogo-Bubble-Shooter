@@ -13,6 +13,10 @@ body {
 	border:3px solid #000;
 }
 
+#agulha {
+	margin-left: 30%;
+}
+
 canvas {
 	position: absolute;
 }

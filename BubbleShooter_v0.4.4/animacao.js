@@ -35,7 +35,7 @@ let bolha = {
 	y: canvas.height - 80,
 	altura: 42,
 	largura: 42,
-	type: 0,
+	type: 2,
 	cor: cores[0],
 	dirx: 0,
 	diry: -1,
@@ -45,8 +45,8 @@ let bolhas = []
 bolhas.push(bolha);
 addBolas(1);
 bolhas[1].x = (canvas.width / 2) + 60;
+addBolas(0);
 addBolas(4);
-addBolas(2);
 addBolas(3);
 
 //pegar a tecla do teclado
@@ -293,9 +293,9 @@ function cluster(bola){
 					clusters.push(alvos.indexOf(grade[lin][col]));
 					//-----------------------------------------------------
 				}
-				else if(grade[lin][col].x >= xMaximo+25){
+				if(grade[lin][col].x >= xMaximo+25){
 					//-----------------------------------------------------
-					for(let i = col; i < grade[lin].length-1; i++){
+					for(let i = col; i <= grade[lin].length-1; i++){
 						if(grade[lin][i].type == bola.type){
 							xMaximo = grade[lin][col].x + 25;
 							clusters.push(alvos.indexOf(grade[lin][i]));
@@ -312,7 +312,7 @@ function cluster(bola){
 						clusters.push(alvos.indexOf(grade[lin][col]));
 					//----------------------------------------------------
 				}
-				else if(grade[lin][col].x <= xMinimo - 5){
+				else if(grade[lin][col].x <= xMinimo - 25){
 					//-----------------------------------------------------
 					for(let i = col; i >= 0; i--){
 						if(grade[lin][i].type == bola.type){
@@ -372,7 +372,8 @@ function addBolas(type){
 function girarMira(x, y, r, angulo){
 	tela.height = 104;
   tela.width = 104;
-	tela.style = `margin-top: ${y}px;margin-left: ${x}px;`;
+	// tela.style = `margin-top: ${y}px;margin-left: ${x}px;`;
+	tela.style = `margin-top: ${y}px;padding-left: ${x - (tela.width/2) + 3}px;`;
 	ponteiro.translate(img.width / 2 + tela.width / 2 - 4, img.height / 2 + 8);
 	ponteiro.rotate(angulo * (Math.PI / 180));
 	ponteiro.drawImage(img, -img.width / 2, -img.height / 2, 8, r);
@@ -388,7 +389,8 @@ function desenha(){
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	girarMira(661, 495, 50, mira.dirx * 3);
+	// girarMira(661, 495, 50, mira.dirx * 3);
+	girarMira(canvas.width / 2, 495, 50, mira.dirx * 3);
 	moveBolha();
 
 	//alvos
