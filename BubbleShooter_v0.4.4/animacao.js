@@ -152,10 +152,10 @@ function proximaJogada(){
 
 function organizaFila(){
 	//tem um processo em espera?
-	if(bolhas.length > 0 && bolhas.length < 2 && alvos.length >= 1){
+	if(bolhas.length > 0 && bolhas.length < 2 && alvos.length > 1){
 		let tipo = 0;
 		let tipos = [];
-		for(let i = 0; i < alvos.length;i++){
+		for(let i = 0; i < alvos.length-1;i++){
 			if(i > 0 && alvos[i-1].type != alvos[i].type){
 				tipos.push(alvos[i-1].type);
 			}
@@ -271,64 +271,78 @@ function cluster(bola){
 		}
 	}
 	console.log('colunas: '+ grade[0].length +' --> linhas: '+ grade.length);
-
 	console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
+
+	let clusters = [];
 	let xMaximo = bola.x + 25;
 	let xMinimo = bola.x - 25;
 	let vazios = 0;
 	let contador = 0;
+	let achou = false;
+	let index = 0;
 	for(let lin = grade.length - 2; lin >= 0; lin--){
 		for(let col = grade[lin].length - 1; col >= 0; col--){
 
 			if(grade[lin][col].type == bola.type){
-
 				vazios = 0;
-				contador++;
+
 				if(grade[lin][col].x <= xMaximo && grade[lin][col].x >= bola.x){
+
+					//-----------------------------------------------------
 					xMaximo = grade[lin][col].x + 25;
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-
-
-					if(col < grade[lin].length - 1 && grade[lin][col+1].x && grade[lin][col+1].type == grade[lin][col].type){
-						for(let i = col; i < grade[lin].length - 1; i++){
-							if(grade[lin][col].type == grade[lin][col+1].type){
-								alvos.splice(alvos.indexOf(grade[lin][i]), 1);
-							}
+					clusters.push(alvos.indexOf(grade[lin][col]));
+					//-----------------------------------------------------
+				}
+				else if(grade[lin][col].x >= xMaximo+25){
+					//-----------------------------------------------------
+					for(let i = col; i < grade[lin].length-1; i++){
+						if(grade[lin][i].type == bola.type){
+							xMaximo = grade[lin][col].x + 25;
+							clusters.push(alvos.indexOf(grade[lin][i]));
 						}
-						// xMaximo = grade[lin][col+1].x + 25;
-						contador++;
+						else {
+							break;
+						}
 					}
-
+					//-----------------------------------------------------
 				}
-				if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x){
-					xMinimo = grade[lin][col].x - 25;
-					alvos.splice(alvos.indexOf(grade[lin][col]), 1);
-					contador++;
-
-					// if(col > 0 && grade[lin][col-1].x && grade[lin][col-1].type == grade[lin][col].type){
-					// 	xMinimo = grade[lin][col-1].x - 25;
-					// 	console.log(`Y: ${grade[lin][col-1].y} -> X: ${grade[lin][col-1].x} - Lin.${lin}-Col.${col-1} - xVizinhoMinimo: ${xMinimo}`);
-					// 	alvos.splice(alvos.indexOf(grade[lin][col]-1), 1);
-					// 	contador++;
-					// }
-
+				else if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x - 5){
+					//-----------------------------------------------------
+						xMinimo = grade[lin][col].x - 25;
+						clusters.push(alvos.indexOf(grade[lin][col]));
+					//----------------------------------------------------
+				}
+				else if(grade[lin][col].x <= xMinimo - 5){
+					//-----------------------------------------------------
+					for(let i = col; i >= 0; i--){
+						if(grade[lin][i].type == bola.type){
+							// xMinimo = grade[lin][col].x - 25;
+							clusters.push(alvos.indexOf(grade[lin][i]));
+						}
+						else {
+							break;
+						}
+					}
+					//-----------------------------------------------------
 				}
 			}
-			//quando não for do mesmo tipo da bola lancada
-			else if(col >= 0 && col <= grade[lin].length - 1 && grade[lin][col].type != bola.type){
+			// tipo do alvo é diferente do tipo da bola lancada
+			else {
 				vazios++;
-			}
-			if(lin <= grade.length - 2 && vazios > grade[lin].length - 1){
-				break;
+				if(lin <= grade.length - 2 && vazios > grade[lin].length - 1){
+					break;
+				}
 			}
 		}
 	}
+
 	//comparacao para excluir somente a ultima bola que foi lancada,
 	//para evitar bug comparanda o tipo do ultimo objeto do array com o tipo da bola lancada
-	if(contador > 2 && alvos[alvos.length-1].type == bola.type){
-		alvos.splice(alvos.indexOf(bola), 1);
-		// alvos.pop();
+	if(clusters.length >= 2){
+		for(let i = 0; i < clusters.length; i++){
+			alvos.splice(clusters[i], 1);
+		}
+		alvos.pop();
 	}
 }
 
