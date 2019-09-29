@@ -17,6 +17,7 @@ let mira = {
 	grauFim: 274 * (Math.PI / 180),
 	dirx: 0
 }
+//             0       1        2       3         4
 let cores = ['azul', 'rosa', 'verde', 'roxo', 'amarelo'];
 let alvos = [];
 let alvo = {
@@ -28,7 +29,7 @@ let alvo = {
 	cor: ''
 }
 
-criarMatriz(4, 8);
+criarMatriz(2, 8);
 
 let bolha = {
 	x: (canvas.width / 2) - 21,
@@ -84,6 +85,79 @@ function moveMira(){
 	}
 }
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function tiposRestantes(){
+	//verificar ultimos timpos de alvos para preencher com tipos de bolas faltantes
+	if(bolhas.length == 1 && alvos.length > 2){
+		let existe = false;
+		let tipos = [];
+		let tipo = 0;
+
+		//adicionar tipos sem repetição
+		for(let i = alvos.length-1; i>-1;i = i-2){
+				tipos.push(alvos[i].type);
+				console.log('tipos:'+alvos[i].type);
+				if(alvos[i].type != bolhas[0].type){
+					addBolas(alvos[i].type);
+					break;
+				}
+		}
+		/*for(let i = 1; i < alvos.length;i++){
+			if(alvos[i-1].type != alvos[i].type){
+				tipo = alvos[i-1].type;
+
+
+				if(tipos.length < 3 && tipos.lengt >= 0){
+					tipos.push(tipo);
+				}
+				else{
+					for(let j = tipos.length-1; j > -1; j--){
+						if(tipos[j] == tipo){
+							existe = true;
+							break;
+						}
+					}
+					if(!existe && tipo != null){
+						tipos.push(tipo);
+					}
+				}
+			}
+		}*/
+
+		// existe = true;
+		/*
+		//ordena o array em ordem crescente
+		tipos.sort((a, b) => a - b);
+		//posicao zero é o menor numero(tipo), posicao maxima é o maior numero(tipo)
+		tipo = getRandomInt(tipos[0], tipos[tipos.length - 1]);
+		*/
+		// let iterador = 0;
+		//adicionar bola com tipo diferente da primeira bola da fila
+		/*do{
+			if(tipo != bolhas[0].type){
+				addBolas(tipo);
+				existe = false;
+			}else{
+				if(tipos[iterador]){
+					tipo = tipos[iterador];
+				}
+			}
+			iterador++;
+		}while(existe);*/
+	}
+	else if(alvos.length < 2){
+		alert("Fim de Jogo");
+		window.location.reload();
+		// history.go(0);
+		// parent.window.document.location.href = '';
+	}
+}
+
 //quando atingir o alvo
 function atingeAlvo(){
 	for(let i = 0; i < alvos.length; i++){
@@ -96,12 +170,11 @@ function atingeAlvo(){
 				bolhas[0].dirx = 0;
 				bolhas[0].diry = 0;
 				teclaStart = false;
-
 				ordenarMatriz(alvos[i], bolhas[0]);
-
 				proximaJogada();
 		}
 	}
+	tiposRestantes();
 }
 
 function moveBolha(){
@@ -152,20 +225,6 @@ function proximaJogada(){
 
 function organizaFila(){
 	//tem um processo em espera?
-	if(bolhas.length > 0 && bolhas.length < 2 && alvos.length > 1){
-		let tipo = 0;
-		let tipos = [];
-		for(let i = 0; i < alvos.length-1;i++){
-			if(i > 0 && alvos[i-1].type != alvos[i].type){
-				tipos.push(alvos[i-1].type);
-			}
-		}
-		//ordena o array em ordem crescente
-		tipos.sort((a, b) => a - b);
-		//posicao zero é o menor numero, posicao maxima é o maior numero
-		tipo = getRandomInt(tipos[0], tipos[tipos.length - 1]);
-		addBolas(tipo);
-	}
 	if(bolhas[1]){
 		bolhas[1].x = (canvas.width / 2) + 60;
 	}
@@ -270,30 +329,59 @@ function cluster(bola){
 			colunas++;
 		}
 	}
-	console.log('colunas: '+ grade[0].length +' --> linhas: '+ grade.length);
+	console.log('colunas: '+ grade[0].length +' --> linhas: '+ (grade.length-2));
 	console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
 
 	let clusters = [];
+	let index = 0;
 	let xMaximo = bola.x + 25;
 	let xMinimo = bola.x - 25;
 	let vazios = 0;
 	let contador = 0;
 	let achou = false;
-	let index = 0;
-	for(let lin = grade.length - 2; lin >= 0; lin--){
-		for(let col = grade[lin].length - 1; col >= 0; col--){
+	for(let lin = grade.length - 2; lin > -1; lin--){
+	console.log(`Linha_${lin}`);
+		for(let col = grade[lin].length - 1; col > -1; col--){
+		console.log(`   Coluna_${col}`);
 
 			if(grade[lin][col].type == bola.type){
 				vazios = 0;
 
+				console.log(`      0-xMaximo_${xMaximo}`);
 				if(grade[lin][col].x <= xMaximo && grade[lin][col].x >= bola.x){
 
 					//-----------------------------------------------------
+					console.log(`         1-xMaximo_${xMaximo}`);
+					/*achou = true;
 					xMaximo = grade[lin][col].x + 25;
-					clusters.push(alvos.indexOf(grade[lin][col]));
+					clusters.push(alvos.indexOf(grade[lin][col]));*/
+					for(let i = col; i < grade[lin].length; i++){
+						if(grade[lin][i].type == bola.type){
+							console.log(`            alvo.type_${grade[lin][i].type} - alvo.y_${grade[lin][i].y} - alvo.x_${grade[lin][i].x}`);
+							xMaximo = grade[lin][i].x + 25;
+							index = alvos.indexOf(grade[lin][i]);
+							for(let i = clusters.length; i > -1;i--){
+								if(clusters[i] == index){
+									achou = true;
+									break;
+								}
+							}
+							if(!achou){
+								clusters.push(index);
+							}else{
+								achou = false;
+							}
+						}
+						else {
+							break;
+						}
+					}
 					//-----------------------------------------------------
+					console.log(`         2-xMaximo_${xMaximo}`);
 				}
-				if(grade[lin][col].x >= xMaximo+25){
+				/*if(grade[lin][col].x == xMaximo+50 && achou == true){
+
+					console.log(`         2-xMaximo_${xMaximo}`);
 					//-----------------------------------------------------
 					for(let i = col; i <= grade[lin].length-1; i++){
 						if(grade[lin][i].type == bola.type){
@@ -304,14 +392,39 @@ function cluster(bola){
 							break;
 						}
 					}
+					achou = false;
 					//-----------------------------------------------------
-				}
-				else if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x - 5){
+					console.log(`         3-xMaximo_${xMaximo}`);
+				}*/
+				if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x - 5){
 					//-----------------------------------------------------
-						xMinimo = grade[lin][col].x - 25;
-						clusters.push(alvos.indexOf(grade[lin][col]));
-					//----------------------------------------------------
-				}
+						/*xMinimo = grade[lin][col].x - 25;
+						index = alvos.indexOf(grade[lin][col]);*/
+						//-----------------------------------------------------
+						for(let i = col; i >= 0; i--){
+							if(grade[lin][i].type == bola.type){
+								xMinimo = grade[lin][col].x - 25;
+								index = alvos.indexOf(grade[lin][i]);
+								// clusters.push(index);
+								for(let i = clusters.length; i > -1;i--){
+									if(clusters[i] == index){
+										achou = true;
+										break;
+									}
+								}
+								if(!achou){
+									clusters.push(index);
+								}else{
+									achou = false;
+								}
+							}
+							else {
+								break;
+							}
+						}
+						//-----------------------------------------------------
+					//-----------------------------------------------------
+				}/*
 				else if(grade[lin][col].x <= xMinimo - 25){
 					//-----------------------------------------------------
 					for(let i = col; i >= 0; i--){
@@ -324,23 +437,25 @@ function cluster(bola){
 						}
 					}
 					//-----------------------------------------------------
-				}
+				}*/
 			}
 			// tipo do alvo é diferente do tipo da bola lancada
 			else {
 				vazios++;
-				if(lin <= grade.length - 2 && vazios > grade[lin].length - 1){
-					break;
-				}
 			}
 		}
+		if(lin > -1 && lin < grade.length - 2 && vazios >= grade[lin].length - 1){
+			break;
+		}
 	}
-
 	//comparacao para excluir somente a ultima bola que foi lancada,
 	//para evitar bug comparanda o tipo do ultimo objeto do array com o tipo da bola lancada
 	if(clusters.length >= 2){
 		for(let i = 0; i < clusters.length; i++){
-			alvos.splice(clusters[i], 1);
+			if(alvos[clusters[i]].type == bola.type){
+				console.log(`apagar      alvo.type_${alvos[clusters[i]].type} - alvo.y_${alvos[clusters[i]].y} - alvo.x_${alvos[clusters[i]].x}`);
+				alvos.splice(clusters[i], 1);
+			}
 		}
 		alvos.pop();
 	}
@@ -377,12 +492,6 @@ function girarMira(x, y, r, angulo){
 	ponteiro.translate(img.width / 2 + tela.width / 2 - 4, img.height / 2 + 8);
 	ponteiro.rotate(angulo * (Math.PI / 180));
 	ponteiro.drawImage(img, -img.width / 2, -img.height / 2, 8, r);
-}
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function desenha(){

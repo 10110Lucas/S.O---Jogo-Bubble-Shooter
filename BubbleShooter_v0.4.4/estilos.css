@@ -8,7 +8,7 @@ body {
 	/* background-color: blue; */
 	background-position: center;
 	background-size: 165% 110%;
-	margin-top: 5px;
+	margin-top: 0px;
 	margin-left: 30%;
 	border:3px solid #000;
 }
@@ -27,4 +27,14 @@ canvas {
 
 #bola-de-lan {
 	display: none;
+}
+
+#situacao {
+	border:3px solid #000;
+	width: 395px;
+	margin: 10px 0px 0px 0px;
+}
+
+h1 {
+	text-align: center;
 }
