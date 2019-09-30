@@ -7,6 +7,8 @@
 	</head>
 	<body>
 
+		<img id="gato" src="imagens/Gato.png" />
+
 		<canvas id="mycanvas" height="600" width="600">
 			O seu browser não suporta este elemento
 		</canvas>
@@ -20,8 +22,26 @@
 		<img id="bola-de-lan" src="imagens/bolas-de-lans.png"/>
 
 		<div id="situacao">
-			<h1 id="titulo">Status do Processo</h1>
-			<h1 id="estado">Processando...</h1>
+			<h1 id="titulo">Status</h1>
+			<h1 id="estado">carregando scripts...</h1>
+		</div>
+
+		<div id="controles">
+			<h2 id="titulo3">Controles Do Jogo</h2>
+			<img id="esquerda" src="imagens/DirecionalEsquerda.png" />
+			<h2 id="infoEsquerda">Mira para Esquerda.</h2>
+			<br>
+			<img id="direita" src="imagens/DirecionalDireita.png" />
+			<h2 id="infoDireita">Mira para Direita.</h2>
+			<br>
+			<button id="btnRestartJogo" onclick="window.location.reload()">
+				Reiniciar Jogo
+			</button>
+			<br>
+		</div>
+
+		<div id="fila">
+			<h3 id="titulo2">4 Processos Suspensos</h3>
 		</div>
 
 		<script type="text/javascript" src="animacao.js"></script>

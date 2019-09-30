@@ -5,7 +5,11 @@ let tela = document.getElementById('agulha');
 let ponteiro = tela.getContext('2d');
 const img = document.getElementById('indicador');
 const imgBolas = document.getElementById('bola-de-lan');
+const msg = document.getElementById('estado');
+const filaProcessos = document.getElementById('titulo2');
+const gato = document.getElementById('gato');
 
+let loading = null;
 let teclas = {};
 let teclaStart = false;
 
@@ -61,7 +65,9 @@ function iniciaGame(){
 	if(teclaStart == true){
 		bolhas[0].x += bolhas[0].speed * bolhas[0].dirx;
 		bolhas[0].y += bolhas[0].speed * bolhas[0].diry;
+		msg.innerHTML = "Processo em Execução";
 	} else {
+		msg.innerHTML = "Processo Pronto";
 		moveMira();
 	}
 }
@@ -104,6 +110,7 @@ function tiposRestantes(){
 				console.log('tipos:'+alvos[i].type);
 				if(alvos[i].type != bolhas[0].type){
 					addBolas(alvos[i].type);
+					bolhas[1].x = (canvas.width / 2) + 60;
 					break;
 				}
 		}
@@ -151,10 +158,7 @@ function tiposRestantes(){
 		}while(existe);*/
 	}
 	else if(alvos.length < 2){
-		alert("Fim de Jogo");
-		window.location.reload();
-		// history.go(0);
-		// parent.window.document.location.href = '';
+		msg.innerHTML = "Todos Processos Finalizados";
 	}
 }
 
@@ -169,9 +173,10 @@ function atingeAlvo(){
 
 				bolhas[0].dirx = 0;
 				bolhas[0].diry = 0;
-				teclaStart = false;
-				ordenarMatriz(alvos[i], bolhas[0]);
-				proximaJogada();
+				ordenarMatriz(alvos[i], bolhas[0])
+				// msg.innerHTML = "Processo Finalizado!!";
+				// setTimeout(, 1000);
+				// teclaStart = false;
 		}
 	}
 	tiposRestantes();
@@ -192,6 +197,15 @@ function moveBolha(){
 	}
 	//quando bater no teto ( y = 0 )
 	else if(bolhas[0].y <= 0){
+		msg.innerHTML = "Processo Suspenso";
+		setTimeout(clearTimeout(loading), 1000);
+		loading = null;
+		setTimeout(function () {
+			loading = window.setInterval(main, 50);
+		}, 1000);
+
+		// setTimeout(function () {
+		// }, 1000);
 		acionarTeto();
 	}
 	//quando bater no chão ( y = +-600px OU y = canvas.height )
@@ -207,8 +221,9 @@ function acionarTeto(){
 }
 
 function proximaJogada(){
-	if(bolhas.length >= 1)
+	if(bolhas.length >= 1){
 		bolhas.shift();
+	}
 	//volta para o lançador
 	bolhas[0].x = (canvas.width / 2) - 21;
 	bolhas[0].y = canvas.height - 80;
@@ -312,6 +327,8 @@ function ordenarMatriz(alvo, bola){
 	}
 	addAlvo(bola.x, bola.y, bola.type);
 	cluster(bola);
+	proximaJogada();
+	teclaStart = false;
 }
 
 function cluster(bola){
@@ -329,8 +346,8 @@ function cluster(bola){
 			colunas++;
 		}
 	}
-	console.log('colunas: '+ grade[0].length +' --> linhas: '+ (grade.length-2));
-	console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
+	// console.log('colunas: '+ grade[0].length +' --> linhas: '+ (grade.length-2));
+	// console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
 
 	let clusters = [];
 	let index = 0;
@@ -340,24 +357,24 @@ function cluster(bola){
 	let contador = 0;
 	let achou = false;
 	for(let lin = grade.length - 2; lin > -1; lin--){
-	console.log(`Linha_${lin}`);
+	// console.log(`Linha_${lin}`);
 		for(let col = grade[lin].length - 1; col > -1; col--){
-		console.log(`   Coluna_${col}`);
+		// console.log(`   Coluna_${col}`);
 
 			if(grade[lin][col].type == bola.type){
 				vazios = 0;
 
-				console.log(`      0-xMaximo_${xMaximo}`);
+				// console.log(`      0-xMaximo_${xMaximo}`);
 				if(grade[lin][col].x <= xMaximo && grade[lin][col].x >= bola.x){
 
 					//-----------------------------------------------------
-					console.log(`         1-xMaximo_${xMaximo}`);
+					// console.log(`         1-xMaximo_${xMaximo}`);
 					/*achou = true;
 					xMaximo = grade[lin][col].x + 25;
 					clusters.push(alvos.indexOf(grade[lin][col]));*/
 					for(let i = col; i < grade[lin].length; i++){
 						if(grade[lin][i].type == bola.type){
-							console.log(`            alvo.type_${grade[lin][i].type} - alvo.y_${grade[lin][i].y} - alvo.x_${grade[lin][i].x}`);
+							// console.log(`            alvo.type_${grade[lin][i].type} - alvo.y_${grade[lin][i].y} - alvo.x_${grade[lin][i].x}`);
 							xMaximo = grade[lin][i].x + 25;
 							index = alvos.indexOf(grade[lin][i]);
 							for(let i = clusters.length; i > -1;i--){
@@ -377,7 +394,7 @@ function cluster(bola){
 						}
 					}
 					//-----------------------------------------------------
-					console.log(`         2-xMaximo_${xMaximo}`);
+					// console.log(`         2-xMaximo_${xMaximo}`);
 				}
 				/*if(grade[lin][col].x == xMaximo+50 && achou == true){
 
@@ -458,6 +475,21 @@ function cluster(bola){
 			}
 		}
 		alvos.pop();
+
+		msg.innerHTML = "Processo Finalizado!";
+		//tudo isso para poder bloquear todas as threads da pagina
+		setTimeout(clearTimeout(loading), 1000);
+		loading = null;
+		setTimeout(function () {
+			loading = window.setInterval(main, 50);
+		}, 1000);
+	}else {
+		msg.innerHTML = "Processo Bloqueado!";
+		setTimeout(clearTimeout(loading), 1000);
+		loading = null;
+		setTimeout(function () {
+			loading = window.setInterval(main, 50);
+		}, 1000);
 	}
 }
 
@@ -494,25 +526,26 @@ function girarMira(x, y, r, angulo){
 	ponteiro.drawImage(img, -img.width / 2, -img.height / 2, 8, r);
 }
 
-function desenha(){
+function main(){
+
+	filaProcessos.innerHTML = `${bolhas.length-1} Processos Suspensos`;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	moveBolha();
 
 	// girarMira(661, 495, 50, mira.dirx * 3);
 	girarMira(canvas.width / 2, 495, 50, mira.dirx * 3);
-	moveBolha();
-
 	//alvos
 	for(let i = 0; i < alvos.length; i++){
 		ctx.drawImage(imgBolas, alvos[i].type * 44, 0, 44, 44, alvos[i].x, alvos[i].y, 42, 42);
 	}
-
 	//bolha
 	for(let i = 0; i < bolhas.length; i++){
 		ctx.drawImage(imgBolas, bolhas[i].type * 44, 0, 44, 44, bolhas[i].x, bolhas[i].y, 42, 42);
 	}
+	ctx.drawImage(gato, 120, 385);
 }
 
-setInterval(desenha, 50);
+loading = window.setInterval(main, 50);
 
-desenha();
+main();
