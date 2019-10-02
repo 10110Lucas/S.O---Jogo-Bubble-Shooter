@@ -114,48 +114,6 @@ function tiposRestantes(){
 					break;
 				}
 		}
-		/*for(let i = 1; i < alvos.length;i++){
-			if(alvos[i-1].type != alvos[i].type){
-				tipo = alvos[i-1].type;
-
-
-				if(tipos.length < 3 && tipos.lengt >= 0){
-					tipos.push(tipo);
-				}
-				else{
-					for(let j = tipos.length-1; j > -1; j--){
-						if(tipos[j] == tipo){
-							existe = true;
-							break;
-						}
-					}
-					if(!existe && tipo != null){
-						tipos.push(tipo);
-					}
-				}
-			}
-		}*/
-
-		// existe = true;
-		/*
-		//ordena o array em ordem crescente
-		tipos.sort((a, b) => a - b);
-		//posicao zero é o menor numero(tipo), posicao maxima é o maior numero(tipo)
-		tipo = getRandomInt(tipos[0], tipos[tipos.length - 1]);
-		*/
-		// let iterador = 0;
-		//adicionar bola com tipo diferente da primeira bola da fila
-		/*do{
-			if(tipo != bolhas[0].type){
-				addBolas(tipo);
-				existe = false;
-			}else{
-				if(tipos[iterador]){
-					tipo = tipos[iterador];
-				}
-			}
-			iterador++;
-		}while(existe);*/
 	}
 	else if(alvos.length < 2){
 		msg.innerHTML = "Todos Processos Finalizados";
@@ -174,9 +132,6 @@ function atingeAlvo(){
 				bolhas[0].dirx = 0;
 				bolhas[0].diry = 0;
 				ordenarMatriz(alvos[i], bolhas[0])
-				// msg.innerHTML = "Processo Finalizado!!";
-				// setTimeout(, 1000);
-				// teclaStart = false;
 		}
 	}
 	tiposRestantes();
@@ -204,8 +159,6 @@ function moveBolha(){
 			loading = window.setInterval(main, 50);
 		}, 1000);
 
-		// setTimeout(function () {
-		// }, 1000);
 		acionarTeto();
 	}
 	//quando bater no chão ( y = +-600px OU y = canvas.height )
@@ -346,8 +299,8 @@ function cluster(bola){
 			colunas++;
 		}
 	}
-	// console.log('colunas: '+ grade[0].length +' --> linhas: '+ (grade.length-2));
-	// console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
+	console.log('colunas: '+ grade[0].length +' --> linhas: '+ (grade.length-2));
+	console.log(`bola Type: ${bola.type} -> bola Y: ${bola.y} -> bola X: ${bola.x}`);
 
 	let clusters = [];
 	let index = 0;
@@ -367,17 +320,14 @@ function cluster(bola){
 				// console.log(`      0-xMaximo_${xMaximo}`);
 				if(grade[lin][col].x <= xMaximo && grade[lin][col].x >= bola.x){
 
-					//-----------------------------------------------------
-					// console.log(`         1-xMaximo_${xMaximo}`);
-					/*achou = true;
-					xMaximo = grade[lin][col].x + 25;
-					clusters.push(alvos.indexOf(grade[lin][col]));*/
+					//-------------------------------------------------------------------------------
 					for(let i = col; i < grade[lin].length; i++){
 						if(grade[lin][i].type == bola.type){
-							// console.log(`            alvo.type_${grade[lin][i].type} - alvo.y_${grade[lin][i].y} - alvo.x_${grade[lin][i].x}`);
 							xMaximo = grade[lin][i].x + 25;
 							index = alvos.indexOf(grade[lin][i]);
-							for(let i = clusters.length; i > -1;i--){
+
+							//------------- para adicionar posição no array sem repetir posições existentes
+							for(let i = clusters.length; i > -1; i--){
 								if(clusters[i] == index){
 									achou = true;
 									break;
@@ -388,36 +338,16 @@ function cluster(bola){
 							}else{
 								achou = false;
 							}
+							//------------- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 						}
 						else {
 							break;
 						}
 					}
-					//-----------------------------------------------------
-					// console.log(`         2-xMaximo_${xMaximo}`);
+					//-------------------------------------------------------------------------------
 				}
-				/*if(grade[lin][col].x == xMaximo+50 && achou == true){
-
-					console.log(`         2-xMaximo_${xMaximo}`);
-					//-----------------------------------------------------
-					for(let i = col; i <= grade[lin].length-1; i++){
-						if(grade[lin][i].type == bola.type){
-							xMaximo = grade[lin][col].x + 25;
-							clusters.push(alvos.indexOf(grade[lin][i]));
-						}
-						else {
-							break;
-						}
-					}
-					achou = false;
-					//-----------------------------------------------------
-					console.log(`         3-xMaximo_${xMaximo}`);
-				}*/
 				if(grade[lin][col].x >= xMinimo && grade[lin][col].x < bola.x - 5){
-					//-----------------------------------------------------
-						/*xMinimo = grade[lin][col].x - 25;
-						index = alvos.indexOf(grade[lin][col]);*/
-						//-----------------------------------------------------
+					//-------------------------------------------------------------------------------
 						for(let i = col; i >= 0; i--){
 							if(grade[lin][i].type == bola.type){
 								xMinimo = grade[lin][col].x - 25;
@@ -439,22 +369,8 @@ function cluster(bola){
 								break;
 							}
 						}
-						//-----------------------------------------------------
-					//-----------------------------------------------------
-				}/*
-				else if(grade[lin][col].x <= xMinimo - 25){
-					//-----------------------------------------------------
-					for(let i = col; i >= 0; i--){
-						if(grade[lin][i].type == bola.type){
-							// xMinimo = grade[lin][col].x - 25;
-							clusters.push(alvos.indexOf(grade[lin][i]));
-						}
-						else {
-							break;
-						}
-					}
-					//-----------------------------------------------------
-				}*/
+					//-------------------------------------------------------------------------------
+				}
 			}
 			// tipo do alvo é diferente do tipo da bola lancada
 			else {
@@ -519,7 +435,6 @@ function addBolas(type){
 function girarMira(x, y, r, angulo){
 	tela.height = 104;
   tela.width = 104;
-	// tela.style = `margin-top: ${y}px;margin-left: ${x}px;`;
 	tela.style = `margin-top: ${y}px;padding-left: ${x - (tela.width/2) + 3}px;`;
 	ponteiro.translate(img.width / 2 + tela.width / 2 - 4, img.height / 2 + 8);
 	ponteiro.rotate(angulo * (Math.PI / 180));
